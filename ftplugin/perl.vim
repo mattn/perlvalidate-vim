@@ -22,7 +22,15 @@ function! s:validate_package_name()
   let name = substitute(s:package_name(), '::', '/', 'g') . '.pm'
   if path[-len(name):] != name && !v:cmdbang
     echohl WarningMsg
-    echomsg "A filename is not match as package name, it should be fixd, maybe."
+    echomsg 'A filename is not match as package name, it should be fixed, maybe.'
+    echohl None
+  endif
+endfunction
+
+function! s:validate_fileformat_unix()
+  if &fileformat != 'unix'
+    echohl WarningMsg
+    echomsg 'A fileformat is not "unix", it should be fixed, maybe.'
     echohl None
   endif
 endfunction
@@ -34,7 +42,7 @@ function! s:validate_encoding_utf8()
     let eng = strlen(substitute(text, '[^\t -~]', '', 'g'))
     if all != eng
       echohl WarningMsg
-      echomsg "You use utf8 package, but the file encoding is not utf-8, it should be fixd, maybe."
+      echomsg 'You use utf8 package, but the file encoding is not utf-8, it should be fixd, maybe.'
       echohl None
     endif
   endif
@@ -44,6 +52,7 @@ augroup perlvalidate
   autocmd!
   au BufWritePost *.pm call s:validate_package_name()
   au BufWritePost *.pl,*.pm call s:validate_encoding_utf8()
+  au BufWritePost *.pl,*.pm call s:validate_fileformat_unix()
 augroup END
 
 " vim:set et:
